@@ -8,6 +8,7 @@ import gfWeb.minhasFinancas.model.entity.Usuario;
 import gfWeb.minhasFinancas.model.repository.UsuarioRepository;
 import gfWeb.minhasFinancas.service.UsuarioService;
 import gfWeb.minhasFinancas.service.exception.RegraNegocioException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService{
@@ -27,9 +28,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
+	@Transactional
 	public Usuario salvarUsuario(Usuario usuario) {
-		// TODO Auto-generated method stub
-		return null;
+		validarEmail(usuario.getEmail());
+		return repository.save(usuario);
 	}
 
 	@Override
