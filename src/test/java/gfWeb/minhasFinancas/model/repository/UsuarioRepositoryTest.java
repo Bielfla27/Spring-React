@@ -44,6 +44,8 @@ public class UsuarioRepositoryTest {
 		Assertions.assertThat(resultadoConsulta).isTrue();
 	}
 	
+	
+	
 	@Test
 	public void deveRetornarFalseQuandoNaoHouverUsuarioComEmailCadastrado(){
 			
