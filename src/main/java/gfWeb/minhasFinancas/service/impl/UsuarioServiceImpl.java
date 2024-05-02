@@ -1,5 +1,7 @@
 package gfWeb.minhasFinancas.service.impl;
 
+import java.util.Optional;
+
 import org.hibernate.annotations.SecondaryRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import gfWeb.minhasFinancas.model.entity.Usuario;
 import gfWeb.minhasFinancas.model.repository.UsuarioRepository;
 import gfWeb.minhasFinancas.service.UsuarioService;
+import gfWeb.minhasFinancas.service.exception.ErroAutenticacao;
 import gfWeb.minhasFinancas.service.exception.RegraNegocioException;
 import jakarta.transaction.Transactional;
 
@@ -23,8 +26,17 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 	@Override
 	public Usuario auteticar(String email, String senha) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<Usuario> usuario =  repository.findByEmail(email);
+		
+		if(!usuario.isPresent()) {
+			throw new ErroAutenticacao("Usúario não encontrado para o email informado");
+		}
+		
+		if(usuario.get().getSenha().equals(senha)) {
+			throw new ErroAutenticacao("Senha Inválida");
+		}
+		
+		return usuario.get();
 	}
 
 	@Override
