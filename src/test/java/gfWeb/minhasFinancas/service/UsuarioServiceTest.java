@@ -1,19 +1,18 @@
 package gfWeb.minhasFinancas.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.refEq;
 
 import java.util.Optional;
 
-import org.aspectj.lang.annotation.Before;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -30,14 +29,42 @@ public class UsuarioServiceTest {
 	
 	@MockBean
 	UsuarioRepository repository;
+	@SpyBean
+	UsuarioServiceImpl service;
 	
-	UsuarioService service;
-	
-	
-	@BeforeEach  
-	public void setUp(){
-		service = new UsuarioServiceImpl(repository);
+	@Test
+	public void deveSalvarUmUsuario() {
+		//cenário 
+		Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
+		Usuario usuario = Usuario.builder().id(1l).nome("teste").email("teste@email.com").senha("teste").build();
+		Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
+		
+		//acao
+		Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
+		
+		//verificacão
+		Assertions.assertThat(usuarioSalvo).isNotNull();
+		Assertions.assertThat(usuarioSalvo.getId()).isEqualTo(1l);
+		Assertions.assertThat(usuarioSalvo.getNome()).isEqualTo("teste");
+		Assertions.assertThat(usuarioSalvo.getEmail()).isEqualTo("teste@email.com");
+		Assertions.assertThat(usuarioSalvo.getSenha()).isEqualTo("teste");
 	}
+	
+	@Test
+	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado() {
+		assertThrows(RegraNegocioException.class,() ->{
+			String email = "teste@teste.com";
+			Usuario usuario =  Usuario.builder().email(email).build();
+			Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(email);
+			
+			//acao
+			service.salvarUsuario(usuario);
+			
+			//verificacao
+			Mockito.verify(repository, Mockito.never()).save(usuario);
+		});
+	}
+	
 	
 	@Test
 	public void deveAtenticarUmUsuario() {
