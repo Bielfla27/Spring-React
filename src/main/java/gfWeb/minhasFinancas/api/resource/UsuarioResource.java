@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import gfWeb.minhasFinancas.api.dto.UsuarioDto;
 import gfWeb.minhasFinancas.model.entity.Usuario;
 import gfWeb.minhasFinancas.service.UsuarioService;
+import gfWeb.minhasFinancas.service.exception.ErroAutenticacao;
 import gfWeb.minhasFinancas.service.exception.RegraNegocioException;
 
 @RestController
@@ -37,6 +38,16 @@ public class UsuarioResource {
 			Usuario usuarioSalvo = service.salvarUsuario(usuario);
 			return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED);
 		}catch (RegraNegocioException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PostMapping("/autenticar")
+	public ResponseEntity autenticar(@RequestBody UsuarioDto dto) {
+		try {
+			Usuario usuarioAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
+			return ResponseEntity.ok(usuarioAutenticado);
+		} catch (ErroAutenticacao e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
