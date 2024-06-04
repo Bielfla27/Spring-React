@@ -45,7 +45,6 @@ public class UsuarioRepositoryTest {
 	}
 	
 	
-	
 	@Test
 	public void deveRetornarFalseQuandoNaoHouverUsuarioComEmailCadastrado(){
 			
