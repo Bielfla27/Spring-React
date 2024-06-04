@@ -1,5 +1,7 @@
 package gfWeb.minhasFinancas.service;
 
+import java.util.Optional;
+
 import gfWeb.minhasFinancas.model.entity.Usuario;
 
 public interface UsuarioService {
@@ -9,5 +11,6 @@ public interface UsuarioService {
 	Usuario salvarUsuario(Usuario usuario);
 	
 	void validarEmail(String email);
-
+	
+	Optional<Usuario> obterPorId(Long id);
 }
