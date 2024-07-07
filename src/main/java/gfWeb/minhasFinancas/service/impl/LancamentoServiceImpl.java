@@ -23,7 +23,7 @@ public class LancamentoServiceImpl implements LancamentoService{
 	private LancamentoRepository lancamentoRepository;
 	
 	public LancamentoServiceImpl(LancamentoRepository lancamentoRepository) {
-		
+		this.lancamentoRepository = lancamentoRepository;
 	}
 	
 	@Override
@@ -52,12 +52,13 @@ public class LancamentoServiceImpl implements LancamentoService{
 	@Override
 	@Transactional(readOnly = true) //falando que é apenas uma transação de leitura 
 	public List<Lancamento> buscar(Lancamento lancamentoFiltro) {
-		Example example = Example.of(lancamentoFiltro, 
-							ExampleMatcher.matching()
-								.withIgnoreCase()
-								.withStringMatcher(StringMatcher.CONTAINING));
+		   Example example = Example.of(lancamentoFiltro,
+	                ExampleMatcher.matching()
+	                        .withIgnoreCase()
+	                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+	   
 		
-		return lancamentoRepository.findAll();
+		return lancamentoRepository.findAll(example);
 	}
 
 	@Override

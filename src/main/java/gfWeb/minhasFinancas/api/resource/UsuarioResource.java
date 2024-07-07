@@ -14,16 +14,14 @@ import gfWeb.minhasFinancas.model.entity.Usuario;
 import gfWeb.minhasFinancas.service.UsuarioService;
 import gfWeb.minhasFinancas.service.exception.ErroAutenticacao;
 import gfWeb.minhasFinancas.service.exception.RegraNegocioException;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@RequiredArgsConstructor
 public class UsuarioResource {
 
-	private UsuarioService service;
-	
-	public UsuarioResource(UsuarioService service) {
-		this.service = service;
-	}
+	private final UsuarioService service;
 	
 	@PostMapping
 	public ResponseEntity salvar (@RequestBody UsuarioDto dto) {
